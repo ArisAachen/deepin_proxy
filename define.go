@@ -7,6 +7,18 @@ const (
 	HTTP = "http"
 )
 
+// table rules, mark each table`s rule
+type TableRule int
+const (
+	PREROUTING TableRule = iota // before network data deal with local
+	INPUT // the gate to deal with data
+	FORWARD
+	OUTPUT // gate to filter output destination
+	POSTROUTING // gate to deal with data goes to routing
+)
+
+
+// table action, mark the action
 type TableTarget int
 
 func (t TableTarget) ToString() string {

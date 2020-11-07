@@ -1,5 +1,48 @@
 package Proxy
 
+type TableMgr struct{
+	tables []TableMgr // only has 4 default tables
+}
+
+type Table struct{
+	name string
+	chains map[string]Chain //only include 4 default chains
+} 
+
+var legaTablelMap  = map[string][]TableRule{
+	["raw"]:[]TableRule{PREROUTING,OUTPUT},
+	["mangle"]:[]TableRule{PREROUTING,INPUT,FORWARD,OUTPUT,POSTROUTING},
+	["filter"]:[]TableRule{},
+	["nat"]:[]TableRule{PREROUTING},
+}
+
+// table limit chains, such as nat dont include PREROUTINGS
+func (t *Table)checkRuleLegal(chain string, table string) bool {
+	legal := false
+	if chain == "" || table == "" {
+		return legal
+	}
+
+	for tableTyp, ruleSlice := range legaTablelMap {
+		if tableTyp == chain {
+			for _,rule := range ruleSlice {
+				legal = true
+			}
+		}
+	}
+	return legal
+}
+
+type Chain struct{
+	name string                   // rule name INPUT OUTPUT POSTROUTING
+	tables []IpTableMsg           // chain may include many table messages
+	itemsMap  map[string]Rules    // chain may include many item chains 
+}
+
+func (r *Rules)insertRules(,)
+
+
+
 type IpTableMsg struct {
 	pkts int32 //对应规则匹配到的报文的个数。
 
